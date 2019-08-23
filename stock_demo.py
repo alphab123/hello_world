@@ -73,19 +73,31 @@ def f_quantify(quantify, total_money, price_list):
     
     return total_amount, total_day_cnt, total_cost_money
 
+
+# 模拟股价
+def f_price(ndays=10000):
+    '''
+    股票价格的对数收益率服从正态分布
+    '''
+    rand_data = np.random.random(ndays)
+    rand_data_ppf = stats.norm.ppf(rand_data, 0, 0.01)
+    # 模拟出来的价格列表，作为买入价，要足够用
+    price_list = 10 * np.exp(rand_data_ppf.cumsum())
+    
+    return price_list
+
+
 #总金额 100万
 total_money = 100 * 10000  
 quota = 10000        ## 定额 10000元
 quantify = 10 * 100  ## 定量 每次10手
 
+# ndays
 sample_cnt = 10000  
 
-# 模拟股价
-rand_data = np.random.random(sample_cnt)
-rand_data_ppf = stats.norm.ppf(rand_data, 0, 0.01)
-l2 = l1.cumsum()
+
 # 模拟出来的价格列表，作为买入价，要足够用
-price_list = 10 * np.exp(l2)
+price_list = f_price(ndays=sample_cnt)
 
 quantify_total_amount, quantify_total_day_cnt, quantify_total_cost_money = f_quantify(quantify, total_money, price_list)
 quota_total_amount, quota_total_day_cnt, quota_total_cost_money = f_quota(quota, total_money, price_list)
